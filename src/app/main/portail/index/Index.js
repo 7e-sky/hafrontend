@@ -293,14 +293,18 @@ function Index(props) {
       dispatch(Actions.cleanUpNew());
     };
   }, [dispatch]);
+    
 
+  // Fonction pour empêcher le défilement
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Empêche le défilement par défaut
+  };
+  
   return (
     <div
-      className={clsx(
-        classes.root,
-        props.innerScroll && classes.innerScroll,
-        "min-h-md"
-      )}
+    className={classes.root}
+    onTouchMove={handleTouchMove} // Ajoute l'événement ici
+    style={{ touchAction: 'pan-y' }} // Permet le défilement vertical uniquement
     >
       <Helmet>
         <title>{title}</title>
