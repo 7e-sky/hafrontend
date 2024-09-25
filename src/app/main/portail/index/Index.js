@@ -296,11 +296,11 @@ function Index(props) {
 
   return (
     <div
-      className={clsx(
+      /* className={clsx(
         classes.root,
         props.innerScroll && classes.innerScroll,
         "min-h-md"
-      )}
+      )} */
     >
       <Helmet>
         <title>{title}</title>
