@@ -80,7 +80,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-/* const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -188,7 +188,7 @@ function SamplePrevArrow(props) {
     width: 300,
     margin: "auto",
   },
-})); */
+})); 
 
 function generate(element) {
   return [0, 1, 2].map((value) =>
