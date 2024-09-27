@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 function TarifDetail(props) {
   const classes = useStyles();
-  const [currency, setCurrency] = useState(0);
+  const [currency, setCurrency] = useState(1);
   function handleChangeCurrency(currencyValue) {
     setCurrency(currencyValue);
   }
