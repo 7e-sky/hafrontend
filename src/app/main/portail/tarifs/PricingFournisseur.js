@@ -40,11 +40,7 @@ function PricingFournisseur(props) {
                 <Grid item xs={12} className="h-160"></Grid>
                 <Grid item xs={12}>
                   <List className={classes.root}>
-                  
-                    <ListItem classes={{ root: "h-60 sm:h-56 " }}
-                      classes={{ root: "h-60 sm:h-56 " }}
-                      alignItems="flex-start"
-                    >
+                    <ListItem classes={{ root: "h-60 sm:h-56 " }}>
                       <ListItemText
                         classes={{
                           primary:
