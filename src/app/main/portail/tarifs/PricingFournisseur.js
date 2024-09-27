@@ -268,7 +268,7 @@ function PricingFournisseur(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "$"}
+                        {currency === 0 ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
                         00<span className="text-10">,00</span>
@@ -493,7 +493,7 @@ function PricingFournisseur(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "$"}
+                        {currency === 0 ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
                         {currency === 0 ? "250" : "25"}
@@ -720,7 +720,7 @@ function PricingFournisseur(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "$"}
+                        {currency === 0 ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
                         {currency === 0 ? "350" : "35"}
@@ -953,7 +953,7 @@ function PricingFournisseur(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "$"}
+                        {currency === 0 ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
                         {currency === 0 ? "450" : "45"}
