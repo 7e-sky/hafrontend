@@ -50,7 +50,10 @@ function PricingFournisseur(props) {
                       />
                     </ListItem>
                     <Divider component="li" />
-                    <ListItem >
+                    <ListItem
+                      classes={{ root: "h-60 sm:h-56 " }}
+                      alignItems="flex-start"
+                    >
                       <ListItemText
                         classes={{
                           primary:
