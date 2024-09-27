@@ -285,7 +285,7 @@ function PricingFournisseur(props) {
                             primary:
                               "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
                           }}
-                          primary="1 produits"
+                          primary="1 activité"
                         />
                       </ListItem>
                       <Divider component="li" />
