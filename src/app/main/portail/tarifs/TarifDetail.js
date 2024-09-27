@@ -65,10 +65,11 @@ function TarifDetail(props) {
               
               <Button
                 color="secondary"
+                className="mr-16"
                 onClick={() => handleChangeCurrency(1)}
                 variant={currency === 0 ? "outlined" : "contained"}
               >
-               {LOCAL_CURRENCY} €
+                €
               </Button>
               <Button
                 variant={currency === 0 ? "contained" : "outlined"}
@@ -76,7 +77,7 @@ function TarifDetail(props) {
                 className="mr-16"
                 onClick={() => handleChangeCurrency(0)}
               >
-                
+                {LOCAL_CURRENCY}
               </Button>
             </FuseAnimateGroup>
           </div>
