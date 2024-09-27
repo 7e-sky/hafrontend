@@ -40,7 +40,21 @@ function PricingFournisseur(props) {
                 <Grid item xs={12} className="h-160"></Grid>
                 <Grid item xs={12}>
                   <List className={classes.root}>
-                    <ListItem classes={{ root: "h-60 sm:h-56 " }}>
+                  
+                    <ListItem classes={{ root: "h-60 sm:h-56 " }}
+                      classes={{ root: "h-60 sm:h-56 " }}
+                      alignItems="flex-start"
+                    >
+                      <ListItemText
+                        classes={{
+                          primary:
+                            "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
+                        }}
+                        primary="Activités"
+                      />
+                    </ListItem>
+                    <Divider component="li" />
+                    <ListItem >
                       <ListItemText
                         classes={{
                           primary:
@@ -101,19 +115,7 @@ function PricingFournisseur(props) {
                         primary="Réception des demandes par produit exposé"
                       />
                     </ListItem>
-                    <Divider component="li" />
-                    <ListItem
-                      classes={{ root: "h-60 sm:h-56 " }}
-                      alignItems="flex-start"
-                    >
-                      <ListItemText
-                        classes={{
-                          primary:
-                            "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
-                        }}
-                        primary="Activités"
-                      />
-                    </ListItem>
+                   
                     <Divider component="li" />
                     <ListItem
                       classes={{ root: "h-60 sm:h-56 " }}
@@ -279,6 +281,16 @@ function PricingFournisseur(props) {
                     <List className={classes.root}>
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
+                          classes={{
+                            primary:
+                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
+                          }}
+                          primary="1 produits"
+                        />
+                      </ListItem>
+                      <Divider component="li" />
+                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
+                        <ListItemText
                           justify="center"
                           classes={{
                             primary:
@@ -331,16 +343,7 @@ function PricingFournisseur(props) {
                           primary="illimité"
                         />
                       </ListItem>
-                      <Divider component="li" />
-                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
-                        <ListItemText
-                          classes={{
-                            primary:
-                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
-                          }}
-                          primary="Limité par Nbr. produits"
-                        />
-                      </ListItem>
+                     
                       <Divider component="li" />
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
@@ -506,6 +509,17 @@ function PricingFournisseur(props) {
                   </Grid>
                   <Grid item xs={12}>
                     <List className={classes.root}>
+                    
+                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
+                        <ListItemText
+                          classes={{
+                            primary:
+                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
+                          }}
+                          primary="3 activités"
+                        />
+                      </ListItem>
+                      <Divider component="li" />
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
                           justify="center"
@@ -560,16 +574,7 @@ function PricingFournisseur(props) {
                           primary="illimité"
                         />
                       </ListItem>
-                      <Divider component="li" />
-                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
-                        <ListItemText
-                          classes={{
-                            primary:
-                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
-                          }}
-                          primary="Jusqu'à 3 activités"
-                        />
-                      </ListItem>
+                      
                       <Divider component="li" />
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
@@ -733,6 +738,17 @@ function PricingFournisseur(props) {
                   </Grid>
                   <Grid item xs={12}>
                     <List className={classes.root}>
+                    
+                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
+                        <ListItemText
+                          classes={{
+                            primary:
+                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
+                          }}
+                          primary="5 activités"
+                        />
+                      </ListItem>
+                      <Divider component="li" />
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
                           justify="center"
@@ -785,16 +801,6 @@ function PricingFournisseur(props) {
                               "font-bold text-10 sm:text-12 md:text-14 lg:text-15 ",
                           }}
                           primary="illimité"
-                        />
-                      </ListItem>
-                      <Divider component="li" />
-                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
-                        <ListItemText
-                          classes={{
-                            primary:
-                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
-                          }}
-                          primary="Jusqu'à 5 activités"
                         />
                       </ListItem>
                       <Divider component="li" />
@@ -968,6 +974,16 @@ function PricingFournisseur(props) {
                     <List className={classes.root}>
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
+                          classes={{
+                            primary:
+                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
+                          }}
+                          primary="10 activités"
+                        />
+                      </ListItem>
+                      <Divider component="li" />
+                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
+                        <ListItemText
                           justify="center"
                           classes={{
                             primary:
@@ -1020,16 +1036,7 @@ function PricingFournisseur(props) {
                           primary="illimité"
                         />
                       </ListItem>
-                      <Divider component="li" />
-                      <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
-                        <ListItemText
-                          classes={{
-                            primary:
-                              "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
-                          }}
-                          primary="Jusqu'à 10 activités"
-                        />
-                      </ListItem>
+                      
                       <Divider component="li" />
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
                         <ListItemText
