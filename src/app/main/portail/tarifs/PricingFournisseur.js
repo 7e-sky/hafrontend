@@ -1145,7 +1145,7 @@ function PricingFournisseur(props) {
                             primary:
                               "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
                           }}
-                          primary="2 produit (3 mois)"
+                          primary="2 produits (1 mois)"
                         />
                       </ListItem>
                       <Divider component="li" />
@@ -1155,7 +1155,7 @@ function PricingFournisseur(props) {
                             primary:
                               "font-bold text-10 sm:text-12 md:text-14 lg:text-15",
                           }}
-                          primary="1 bannière (6 mois)"
+                          primary="1 bannière (3 mois)"
                         />
                       </ListItem>
                     </List>
