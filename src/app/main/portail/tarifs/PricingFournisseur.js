@@ -291,7 +291,7 @@ function PricingFournisseur(props) {
                             title="Si vous mettez la demande en ligne après validation, elle sera visibile par les founrisseurs et les visiteurs du site web."
                             aria-label="anonyme"
                           >
-                            <Icon className="ml-4 text-20">help_outline</Icon>
+                            <Icon className="ml-4 text-20">help_outline </Icon>
                           </Tooltip>
                       </ListItem>
                       <Divider component="li" />
