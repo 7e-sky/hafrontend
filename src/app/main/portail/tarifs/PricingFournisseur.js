@@ -283,6 +283,13 @@ function PricingFournisseur(props) {
                           }}
                           primary="1 activité"
                         />
+                        <Tooltip
+                            placement="top"
+                            title="Si vous mettez la demande en ligne après validation, elle sera visibile par les founrisseurs et les visiteurs du site web."
+                            aria-label="anonyme"
+                          >
+                            <Icon className="ml-4 text-20">help_outline</Icon>
+                          </Tooltip>
                       </ListItem>
                       <Divider component="li" />
                       <ListItem classes={{ root: "h-60 sm:h-56 text-center" }}>
