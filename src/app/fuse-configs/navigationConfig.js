@@ -515,6 +515,15 @@ const navigationConfig = [
         exact: true,
         url: "/facturation",
       },
+      {
+        id: "import-ach",
+        title: "Import",
+        type: "item",
+        icon: "cloud",
+        auth: authRoles.acheteur,
+        exact: true,
+        url: "/ac/import",
+      },
       
     ],
   },
