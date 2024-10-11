@@ -102,7 +102,7 @@
         "build-stats": "yarn run build --stats",
         "bundle-report": "yarn run build-stats && webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html -O"
     },
-    "eslintConfig": {  
+    "eslintConfig": {
         "extends": "react-app"
     },
     "browserslist": {
