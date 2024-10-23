@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Popper, ClickAwayListener, MenuItem, Icon, IconButton, ListItemText, Paper, TextField, Tooltip, Typography, ListItemSecondaryAction, Avatar, ListItemAvatar, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import clsx from 'clsx';
@@ -157,6 +157,7 @@ function Search(props) {
     const suggestionsNode = useRef(null);
     const popperNode = useRef(null);
     const dispatch = useDispatch();
+    //const globalSearch = useSelector(state => state.globalSearchApp.globalSearch);
 
     function showSearch() {
         dispatch(Actions.showSearch());
@@ -317,7 +318,7 @@ function Search(props) {
             </Popper>
         );
     };
-
+   
     const autosuggestProps = {
         renderInputComponent,
         highlightFirstSuggestion: true,
@@ -332,6 +333,12 @@ function Search(props) {
         renderSuggestion: (suggestion, params) => renderSuggestion(suggestion, params, classes),
         renderSuggestionsContainer: renderSuggestionsContainer,
     };
+
+    useEffect(() => {
+        const hasResults = globalSearch.suggestions.length > 0 || globalSearch.noSuggestions;
+        console.log('Calling onResultsVisibilityChange with:', hasResults);
+        props.onResultsVisibilityChange(hasResults);
+    }, [globalSearch.suggestions, globalSearch.noSuggestions]);
 
     switch (props.variant) {
         case 'basic':
