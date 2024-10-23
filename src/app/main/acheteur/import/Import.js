@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import agent from 'agent';
-import * as XLSX from 'xlsx-js-style';
 import {
   Typography,
   Table,
@@ -65,23 +64,20 @@ const Import = () => {
       return;
     }
 
-    if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.csv')) {
-      setAlertMessage('Format de fichier non valide. Veuillez télécharger un fichier .xlsx ou .csv.');
+    if (!file.name.endsWith('.csv')) {
+      setAlertMessage('Format de fichier non valide. Veuillez télécharger un fichier .csv.');
       setAlertOpen(true);
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-
+      const text = e.target.result;
+      const rows = text.split('\n').slice(1); // Ignorer l'en-tête
       const newFournisseurs = [];
-      json.forEach((row, index) => {
-        if (index === 0) return; // Ignorer l'en-tête
-        const [nom, adresse, telephone] = row;
+
+      rows.forEach(row => {
+        const [nom, adresse, telephone] = row.split(',');
         if (nom && adresse && telephone) {
           newFournisseurs.push({ nom, adresse, telephone });
         }
@@ -95,7 +91,7 @@ const Import = () => {
       setAlertOpen(true);
     };
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsText(file);
     setYourFile(file); // Mettez à jour le fichier après lecture
   };
 
@@ -167,7 +163,7 @@ const Import = () => {
       </Typography>
       <div className={classes.uploadContainer}>
         <input
-          accept=".csv, .xlsx"
+          accept=".csv"
           style={{ display: 'none' }}
           id="file-upload"
           type="file"
