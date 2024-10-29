@@ -5,20 +5,20 @@ const initialState = {
     suggestions: [],
     loading: false,
     opened: false,
-    noSuggestions: false
-
-
+    noSuggestions: false,
+    actualites: [], // Ajout du state pour les actualités
+    loadingActualites: false // Ajout du state pour le chargement des actualités
 };
 
 const globalSearchReducer = function (state = initialState, action) {
     switch (action.type) {
-
         case Actions.CLEAN_UP:
             {
                 return {
                     ...state,
                     suggestions: [],
-                    noSuggestions: false
+                    noSuggestions: false,
+                    actualites: [] // Réinitialisation des actualités
                 };
             }
         case Actions.REQUEST_DATA:
@@ -27,8 +27,8 @@ const globalSearchReducer = function (state = initialState, action) {
                     ...state,
                     loading: true,
                     suggestions: [],
-                    noSuggestions: false
-
+                    noSuggestions: false,
+                    loadingActualites: true // Mise à jour du state de chargement
                 };
             }
         case Actions.GET_DATA:
@@ -39,10 +39,11 @@ const globalSearchReducer = function (state = initialState, action) {
                     ...state,
                     suggestions,
                     noSuggestions,
-                    loading: false
+                    loading: false,
+                    loadingActualites: false
                 };
             }
-        case Actions.GS_SET_SEARCH_TEXT:
+        case Actions.SET_SEARCH_TEXT:
             {
                 return {
                     ...state,
@@ -62,6 +63,17 @@ const globalSearchReducer = function (state = initialState, action) {
                     ...state,
                     opened: false,
                     searchText: '',
+                    actualites: [] // Réinitialisation des actualités à la fermeture
+                };
+            }
+        case Actions.CLEAR_SUGGESTIONS:
+            {
+                return {
+                    ...state,
+                    suggestions: [],
+                    noSuggestions: false,
+                    loading: false,
+                    loadingActualites: false
                 };
             }
         default:

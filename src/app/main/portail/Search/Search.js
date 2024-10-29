@@ -47,10 +47,12 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-between',
         width: '100%',
         padding: theme.spacing(2),
+        maxWidth: '1400px', // Augmenter la largeur maximale
+        margin: '0 auto', // Centrer le conteneur
     },
     suggestionSection: {
-        flex: '1 1 33.33%',
-        maxWidth: '33.33%',
+        flex: '1 1 25%',
+        maxWidth: '25%',
         padding: theme.spacing(1),
         '& > div': {
             maxHeight: '400px',
@@ -61,6 +63,8 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(1, 2),
         backgroundColor: theme.palette.grey[200],
         fontWeight: 'bold',
+        display: 'flex',
+        alignItems: 'center',
     },
     suggestion: {
         padding: theme.spacing(1, 2),
@@ -68,45 +72,85 @@ const useStyles = makeStyles(theme => ({
             backgroundColor: theme.palette.action.hover,
         },
     },
+    actualiteItem: {
+        '& .MuiAvatar-root': {
+            backgroundColor: theme.palette.primary.main,
+        }
+    },
 }));
 
 function renderSectionTitle(section, classes) {
     if (section.suggestions.length === 0) {
         return null;
     }
+    const icon = section.title === 'Actualités' ? 'article' : 
+                 section.title === 'Produits' ? 'shopping_cart' :
+                 section.title === 'Fournisseurs' ? 'business' : 'category';
+    
     return (
-        <Typography variant="subtitle1" className={classes.sectionTitle}>{section.title}</Typography>
+        <Typography variant="subtitle1" className={classes.sectionTitle}>
+            <Icon className="mr-8">{icon}</Icon>
+            {section.title}
+        </Typography>
     );
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }, classes) {
+    console.log('Suggestion:', suggestion);
+    
     let result = '';
     let img = null;
+    
     if (suggestion.societe) {
         result = suggestion.societe;
-        img = <Avatar>{suggestion.societe[0]}</Avatar>
+        img = <Avatar>{suggestion.societe[0]}</Avatar>;
     }
     else if (suggestion.titre) {
-        result = suggestion.titre
-        img = suggestion.featuredImageId
-            ? <Avatar alt={suggestion.titre} src={FuseUtils.getUrl() + suggestion.featuredImageId.url} />
-            : <Avatar alt={suggestion.titre} src="assets/images/ecommerce/product-placeholder.jpg" />
+        result = suggestion.titre;
+        if (suggestion.type === 'actualite') {
+            img = suggestion.image 
+                ? <Avatar 
+                    alt={suggestion.titre} 
+                    src={suggestion.image} 
+                    imgProps={{
+                        onError: (e) => {
+                            console.error('Image error:', e);
+                            e.target.src = 'assets/images/ecommerce/product-placeholder.jpg';
+                        }
+                    }}
+                  />
+                : <Avatar><Icon>article</Icon></Avatar>;
+        } else {
+            img = suggestion.featuredImageId
+                ? <Avatar alt={suggestion.titre} src={suggestion.featuredImageId.url} />
+                : <Avatar alt={suggestion.titre} src="assets/images/ecommerce/product-placeholder.jpg" />;
+        }
     }
     else if (suggestion.name) {
-        result = suggestion.name
-        img = <Avatar>{suggestion.name[0]}</Avatar>
+        result = suggestion.name;
+        img = <Avatar>{suggestion.name[0]}</Avatar>;
     }
     else if (suggestion.autreFrs) {
-        result = suggestion.autreFrs
+        result = suggestion.autreFrs;
     }
     else if (suggestion.autreProduits) {
-        result = suggestion.autreProduits
+        result = suggestion.autreProduits;
+    }
+    else if (suggestion.autreActivites) {
+        result = suggestion.autreActivites;
+    }
+    else if (suggestion.autreActualites) {
+        result = suggestion.autreActualites;
     }
 
     return (
         <div className={classes.suggestion}>
             <Grid container alignItems="center" spacing={2}>
-                {img && <Grid item>{img}</Grid>}
+                {img && (
+                    <Grid item>
+                        {img}
+                    </Grid>
+                )}
                 <Grid item xs>
                     <Typography>
                         <Highlighter
@@ -128,26 +172,17 @@ function renderSuggestion(suggestion, { query, isHighlighted }, classes) {
 }
 
 function getSuggestionValue(suggestion) {
-    let result = '';
-    if (suggestion.societe) {
-        result = suggestion.societe
-    }
-    else if (suggestion.titre) {
-        result = suggestion.titre
-    }
-    else if (suggestion.name) {
-        result = suggestion.name
-    }
-    else if (suggestion.autreFrs) {
-        result = suggestion.autreFrs
-    }
-    else if (suggestion.autreProduits) {
-        result = suggestion.autreProduits
-    }
-    return result;
+    if (suggestion.societe) return suggestion.societe;
+    if (suggestion.titre) return suggestion.titre;
+    if (suggestion.name) return suggestion.name;
+    if (suggestion.autreFrs) return suggestion.autreFrs;
+    if (suggestion.autreProduits) return suggestion.autreProduits;
+    if (suggestion.autreActivites) return suggestion.autreActivites;
+    if (suggestion.autreActualites) return suggestion.autreActualites;
+    return '';
 }
-function getSectionSuggestions(section) {
 
+function getSectionSuggestions(section) {
     return section.suggestions;
 }
 
@@ -157,7 +192,6 @@ function Search(props) {
     const suggestionsNode = useRef(null);
     const popperNode = useRef(null);
     const dispatch = useDispatch();
-    //const globalSearch = useSelector(state => state.globalSearchApp.globalSearch);
 
     function showSearch() {
         dispatch(Actions.showSearch());
@@ -173,58 +207,60 @@ function Search(props) {
         if (event.keyCode === 27) {
             hideSearch();
         }
-          if (event.keyCode === 13) {
-              event.target.value && history.push(`/vente-produits?q=${event.target.value}`);
-          }
+        if (event.keyCode === 13) {
+            event.target.value && history.push(`/vente-produits?q=${event.target.value}`);
+        }
     }
 
     function handleSuggestionsFetchRequested({ value }) {
         if (value.trim().length > 1) {
             dispatch(Actions.loadSuggestions(value.trim()));
-            // Fake an AJAX call
         }
     }
-
 
     function handleSuggestionSelected(event, { suggestion }) {
         event.preventDefault();
         event.stopPropagation();
         let url;
-        if (!suggestion) {
-            return;
-        }
+        
+        if (!suggestion) return;
+
         if (suggestion.societe) {
-            url = `/entreprise/${suggestion.id}-${suggestion.slug}`
+            url = `/entreprise/${suggestion.id}-${suggestion.slug}`;
         }
         else if (suggestion.titre) {
-            url = `/detail-produit/${suggestion.sec}/${suggestion.soussec}/${suggestion.id}-${suggestion.slug}`
+            url = `/actualite/${suggestion.id}-${suggestion.slug}`;
         }
         else if (suggestion.name) {
-            url = `/vente-produits/${suggestion.sect}/${suggestion.slug}`
+            url = `/vente-produits/${suggestion.sect}/${suggestion.slug}`;
         }
         else if (suggestion.autreFrs) {
-            url = `/entreprises?q=${suggestion.value}`
+            url = `/entreprises?q=${suggestion.value}`;
         }
         else if (suggestion.autreProduits) {
-            url = `/vente-produits?q=${suggestion.value}`
+            url = `/vente-produits?q=${suggestion.value}`;
         }
+        else if (suggestion.autreActivites) {
+            url = `/vente-produits?activite=${suggestion.value}`;
+        }
+        else if (suggestion.autreActualites) {
+            url = `/actualites?q=${suggestion.value}`;
+        }
+        
         history.push(url);
         hideSearch();
     }
 
     function handleSuggestionsClearRequested() {
-        dispatch(Actions.cleanUp());
+        dispatch(Actions.clearSuggestions());
     }
 
-    function handleChange(event) {
-        dispatch(Actions.setGlobalSearchText(event))
+    function handleChange(event, { newValue }) {
+        dispatch(Actions.setSearchText(newValue));
     }
 
     function handleClickAway(event) {
-        return (
-            !suggestionsNode.current ||
-            !suggestionsNode.current.contains(event.target)
-        ) && hideSearch();
+        return !suggestionsNode.current || !suggestionsNode.current.contains(event.target) && hideSearch();
     }
 
     function renderInputComponent(inputProps) {
@@ -290,12 +326,19 @@ function Search(props) {
                 open={Boolean(children) || globalSearch.noSuggestions || globalSearch.loading}
                 popperOptions={{ positionFixed: true }}
                 className="z-9999"
-                style={{ width: '100%', maxWidth: '1200px' }}
+                style={{ 
+                    width: '100%', 
+                    maxWidth: '1400px', // Même valeur que suggestionsContainer
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    margin: '0 auto'
+                }}
             >
                 <Paper
                     elevation={4}
                     square
                     {...containerProps}
+                    style={{ width: '100%' }}
                 >
                     <Grid container className={classes.suggestionsContainer}>
                         {React.Children.map(children, (child, index) => (
@@ -345,7 +388,6 @@ function Search(props) {
         }
     }, [globalSearch.suggestions, globalSearch.noSuggestions]);
     
-
     switch (props.variant) {
         case 'basic':
             {
@@ -428,7 +470,7 @@ function Search(props) {
 Search.propTypes = {};
 Search.defaultProps = {
     trigger: (<IconButton className="w-64 h-64"><Icon>search</Icon></IconButton>),
-    variant: 'full'// basic, full
+    variant: 'full'
 };
 
 export default withReducer('globalSearchApp', reducer)(Search);
