@@ -77,13 +77,90 @@ const useStyles = makeStyles(theme => ({
             backgroundColor: theme.palette.primary.main,
         }
     },
+    mainPaper: {
+        backgroundColor: theme.palette.background.default,
+        borderRadius: 8,
+        overflow: 'hidden',
+        padding: theme.spacing(3)
+    },
+    searchResults: {
+        width: '100%',
+        overflowX: 'auto',
+        '&::-webkit-scrollbar': {
+            height: '6px',
+        },
+        '&::-webkit-scrollbar-track': {
+            background: theme.palette.background.default,
+        },
+        '&::-webkit-scrollbar-thumb': {
+            background: theme.palette.grey[400],
+            borderRadius: '3px',
+        }
+    },
+    sectionsContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: theme.spacing(4), // Augmentation de l'espace entre les sections
+        padding: theme.spacing(1),
+        minHeight: 300,
+    },
+    sectionWrapper: {
+        flex: '1 1 0', // Distribution égale de l'espace
+        minWidth: '250px', // Largeur minimale
+        maxWidth: '350px', // Largeur maximale
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[2],
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+            boxShadow: theme.shadows[4],
+            transform: 'translateY(-2px)'
+        }
+    },
+    sectionHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(2),
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+    },
+    sectionIcon: {
+        marginRight: theme.spacing(1.5),
+        fontSize: 22,
+    },
+    sectionTitle: {
+        fontWeight: 500,
+        fontSize: '1rem',
+        letterSpacing: '0.5px'
+    },
+    sectionContent: {
+        flex: 1,
+        padding: theme.spacing(2),
+        backgroundColor: theme.palette.background.paper,
+        overflowY: 'auto',
+        minHeight: 200,
+        maxHeight: 400,
+        '&::-webkit-scrollbar': {
+            width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            background: theme.palette.grey[300],
+            borderRadius: '2px',
+        }
+    }
 }));
 
 function renderSectionTitle(section, classes) {
     if (section.suggestions.length === 0) {
         return null;
     }
-    const icon = section.title === 'Actualités' ? 'article' : 
+    const icon = section.title === '12Actualités' ? 'article' : 
                  section.title === 'Produits' ? 'shopping_cart' :
                  section.title === 'Fournisseurs' ? 'business' : 'category';
     
@@ -320,6 +397,33 @@ function Search(props) {
         );
     }
     const renderSuggestionsContainer = ({ containerProps, children }) => {
+        const childrenArray = Array.isArray(children) ? children : [children];
+
+        // Compter le nombre de sections avec du contenu
+        const activeSections = [
+            childrenArray[0],
+            childrenArray[1],
+            childrenArray[2],
+            childrenArray[3]
+        ].filter(content => content).length;
+
+        // Calculer la largeur maximale en fonction du nombre de sections
+        const getMaxWidth = (count) => {
+            switch(count) {
+                case 1: return '350px';   // Une seule section
+                case 2: return '700px';   // Deux sections
+                case 3: return '1050px';  // Trois sections
+                default: return '1400px'; // Quatre sections
+            }
+        };
+
+        const sections = [
+            { title: 'Fournisseurs', content: childrenArray[0] },
+            { title: 'Produits', content: childrenArray[1] },
+            { title: 'Activités', content: childrenArray[2] },
+            { title: 'Actualités', content: childrenArray[3] }
+        ];
+
         return (
             <Popper
                 anchorEl={popperNode.current}
@@ -327,36 +431,38 @@ function Search(props) {
                 popperOptions={{ positionFixed: true }}
                 className="z-9999"
                 style={{ 
-                    width: '100%', 
-                    maxWidth: '1400px', // Même valeur que suggestionsContainer
+                    width: '100%',
+                    maxWidth: getMaxWidth(activeSections),
                     left: '50%',
                     transform: 'translateX(-50%)',
                     margin: '0 auto'
                 }}
             >
-                <Paper
-                    elevation={4}
-                    square
-                    {...containerProps}
-                    style={{ width: '100%' }}
-                >
-                    <Grid container className={classes.suggestionsContainer}>
-                        {React.Children.map(children, (child, index) => (
-                            <Grid item className={classes.suggestionSection} key={index}>
-                                {child}
-                            </Grid>
-                        ))}
-                    </Grid>
-                    {globalSearch.noSuggestions && (
-                        <Typography className="px-16 py-12">
-                            Aucun résultat..
-                        </Typography>
-                    )}
-                    {globalSearch.loading && (
-                        <div className="px-16 py-12 text-center">
-                            <CircularProgress color="secondary" /> <br /> Chargement ...
-                        </div>
-                    )}
+                <Paper elevation={3} square {...containerProps} className={classes.mainPaper}>
+                    <div className={classes.searchResults}>
+                        <Grid 
+                            container 
+                            spacing={2}  // Réduit l'espacement entre les sections
+                            className={classes.sectionsContainer}
+                            justifyContent="center"
+                        >
+                            {sections.map((section, index) => (
+                                section.content && (
+                                    <Grid 
+                                        item 
+                                        style={{ width: '320px' }}  // Largeur fixe pour chaque section
+                                        key={index}
+                                    >
+                                        <div className={classes.sectionWrapper}>
+                                            <div className={classes.sectionContent}>
+                                                {section.content}
+                                            </div>
+                                        </div>
+                                    </Grid>
+                                )
+                            ))}
+                        </Grid>
+                    </div>
                 </Paper>
             </Popper>
         );
