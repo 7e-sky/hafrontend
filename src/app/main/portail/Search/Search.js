@@ -153,7 +153,18 @@ const useStyles = makeStyles(theme => ({
             background: theme.palette.grey[300],
             borderRadius: '2px',
         }
-    }
+    },
+    noResultsContainer: {
+        padding: theme.spacing(3),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 80
+    },
+    noResultsText: {
+        color: theme.palette.text.secondary,
+        fontSize: '0.875rem'
+    },
 }));
 
 function renderSectionTitle(section, classes) {
@@ -399,7 +410,37 @@ function Search(props) {
     const renderSuggestionsContainer = ({ containerProps, children }) => {
         const childrenArray = Array.isArray(children) ? children : [children];
 
-        // Compter le nombre de sections avec du contenu
+        // Vérifier s'il y a des résultats
+        const hasResults = childrenArray.some(content => content);
+
+        // Si aucun résultat et qu'une recherche est en cours
+        if (!hasResults && globalSearch.searchText && !globalSearch.loading) {
+            return (
+                <Popper
+                    anchorEl={popperNode.current}
+                    open={true}
+                    popperOptions={{ positionFixed: true }}
+                    className="z-9999"
+                    style={{ 
+                        width: '100%',
+                        maxWidth: '350px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        margin: '0 auto'
+                    }}
+                >
+                    <Paper elevation={3} square {...containerProps} className={classes.mainPaper}>
+                        <div className={classes.noResultsContainer}>
+                            <Typography variant="body1" className={classes.noResultsText}>
+                                Aucun résultat trouvé
+                            </Typography>
+                        </div>
+                    </Paper>
+                </Popper>
+            );
+        }
+
+        // Le reste du code existant pour l'affichage des résultats
         const activeSections = [
             childrenArray[0],
             childrenArray[1],
