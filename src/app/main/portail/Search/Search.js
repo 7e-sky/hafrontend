@@ -78,45 +78,34 @@ const useStyles = makeStyles(theme => ({
         }
     },
     mainPaper: {
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
         borderRadius: 8,
         overflow: 'hidden',
-        padding: theme.spacing(3)
+        padding: theme.spacing(2),
+        boxShadow: '0 4px 20px 0 rgba(0,0,0,0.1)'
     },
     searchResults: {
         width: '100%',
-        overflowX: 'auto',
-        '&::-webkit-scrollbar': {
-            height: '6px',
-        },
-        '&::-webkit-scrollbar-track': {
-            background: theme.palette.background.default,
-        },
-        '&::-webkit-scrollbar-thumb': {
-            background: theme.palette.grey[400],
-            borderRadius: '3px',
-        }
+        overflow: 'hidden'
     },
     sectionsContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        gap: theme.spacing(4), // Augmentation de l'espace entre les sections
         padding: theme.spacing(1),
-        minHeight: 300,
+        minHeight: 'auto',
+        margin: 0,
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: theme.spacing(2)
     },
     sectionWrapper: {
-        flex: '1 1 0', // Distribution égale de l'espace
-        minWidth: '250px', // Largeur minimale
-        maxWidth: '350px', // Largeur maximale
         backgroundColor: theme.palette.background.paper,
         borderRadius: theme.shape.borderRadius,
-        boxShadow: theme.shadows[2],
+        boxShadow: '0 2px 8px 0 rgba(0,0,0,0.05)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         transition: 'all 0.2s ease-in-out',
         '&:hover': {
-            boxShadow: theme.shadows[4],
+            boxShadow: '0 4px 12px 0 rgba(0,0,0,0.1)',
             transform: 'translateY(-2px)'
         }
     },
@@ -139,32 +128,40 @@ const useStyles = makeStyles(theme => ({
     sectionContent: {
         flex: 1,
         padding: theme.spacing(2),
-        backgroundColor: theme.palette.background.paper,
-        overflowY: 'auto',
-        minHeight: 200,
-        maxHeight: 400,
+        maxHeight: '350px',
+        overflow: 'auto',
         '&::-webkit-scrollbar': {
-            width: '4px',
+            display: 'none'
         },
-        '&::-webkit-scrollbar-track': {
-            background: 'transparent',
-        },
-        '&::-webkit-scrollbar-thumb': {
-            background: theme.palette.grey[300],
-            borderRadius: '2px',
-        }
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
     },
     noResultsContainer: {
-        padding: theme.spacing(3),
+        padding: theme.spacing(6),
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: 80
+        minHeight: 200,
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 8
+    },
+    noResultsIcon: {
+        fontSize: 48,
+        color: theme.palette.grey[300],
+        marginBottom: theme.spacing(2)
     },
     noResultsText: {
-        color: theme.palette.text.secondary,
-        fontSize: '0.875rem'
+        color: theme.palette.text.primary,
+        fontSize: '1.1rem',
+        fontWeight: 500,
+        marginBottom: theme.spacing(1)
     },
+    noResultsSubText: {
+        color: theme.palette.text.secondary,
+        fontSize: '0.875rem',
+        textAlign: 'center'
+    }
 }));
 
 function renderSectionTitle(section, classes) {
@@ -292,11 +289,12 @@ function Search(props) {
     }
 
     function escFunction(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            event.preventDefault();
+            return false;
+        }
         if (event.keyCode === 27) {
             hideSearch();
-        }
-        if (event.keyCode === 13) {
-            event.target.value && history.push(`/vente-produits?q=${event.target.value}`);
         }
     }
 
@@ -354,13 +352,23 @@ function Search(props) {
     function renderInputComponent(inputProps) {
         const {
             variant,
-            classes, inputRef = () => {
-            }, ref, ...other
+            classes, 
+            inputRef = () => {},
+            ref,
+            ...other
         } = inputProps;
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
+        };
+
         return (
-            <div className="w-full relative">
+            <div className="w-full relative" onKeyDown={handleKeyDown}>
                 {variant === "basic" ? (
-                    // Outlined
                     <React.Fragment>
                         <TextField
                             fullWidth
@@ -372,6 +380,13 @@ function Search(props) {
                                 classes: {
                                     input: clsx(classes.input, "py-0 px-16 h-48 pr-48"),
                                     notchedOutline: "rounded-8"
+                                },
+                                onKeyDown: handleKeyDown
+                            }}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    return false;
                                 }
                             }}
                             variant="outlined"
@@ -379,31 +394,34 @@ function Search(props) {
                         />
                         {globalSearch.loading ? (
                             <CircularProgress color="secondary" className="absolute top-0 right-0 h-48 w-48 p-12 pointer-events-none" />
-                        )
-                            :
+                        ) : (
                             <Icon className="absolute top-0 right-0 h-48 w-48 p-12 pointer-events-none" color="action">search</Icon>
-                        }
+                        )}
                     </React.Fragment>
-                )
-                    :
-                    (
-                        // Standard
-                        <TextField
-                            fullWidth
-                            InputProps={{
-                                disableUnderline: true,
-                                inputRef: node => {
-                                    ref(node);
-                                    inputRef(node);
-                                },
-                                classes: {
-                                    input: clsx(classes.input, "py-0 px-16 h-64")
-                                }
-                            }}
-                            variant="standard"
-                            {...other}
-                        />
-                    )}
+                ) : (
+                    <TextField
+                        fullWidth
+                        InputProps={{
+                            disableUnderline: true,
+                            inputRef: node => {
+                                ref(node);
+                                inputRef(node);
+                            },
+                            classes: {
+                                input: clsx(classes.input, "py-0 px-16 h-64")
+                            },
+                            onKeyDown: handleKeyDown
+                        }}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                return false;
+                            }
+                        }}
+                        variant="standard"
+                        {...other}
+                    />
+                )}
             </div>
         );
     }
@@ -413,17 +431,17 @@ function Search(props) {
         // Vérifier s'il y a des résultats
         const hasResults = childrenArray.some(content => content);
 
-        // Si aucun résultat et qu'une recherche est en cours
-        if (!hasResults && globalSearch.searchText && !globalSearch.loading) {
+        // Si aucun résultat, une recherche est en cours, et le texte de recherche n'est pas vide
+        if (!hasResults && globalSearch.searchText && !globalSearch.loading && globalSearch.searchText.trim() !== '') {
             return (
                 <Popper
                     anchorEl={popperNode.current}
-                    open={true}
+                    open={Boolean(globalSearch.searchText && globalSearch.searchText.trim() !== '')}
                     popperOptions={{ positionFixed: true }}
                     className="z-9999"
                     style={{ 
                         width: '100%',
-                        maxWidth: '350px',
+                        maxWidth: '400px',
                         left: '50%',
                         transform: 'translateX(-50%)',
                         margin: '0 auto'
@@ -431,8 +449,12 @@ function Search(props) {
                 >
                     <Paper elevation={3} square {...containerProps} className={classes.mainPaper}>
                         <div className={classes.noResultsContainer}>
-                            <Typography variant="body1" className={classes.noResultsText}>
+                            <Icon className={classes.noResultsIcon}>search_off</Icon>
+                            <Typography className={classes.noResultsText}>
                                 Aucun résultat trouvé
+                            </Typography>
+                            <Typography className={classes.noResultsSubText}>
+                                Aucun élément ne correspond à votre recherche "{globalSearch.searchText}"
                             </Typography>
                         </div>
                     </Paper>
@@ -483,9 +505,13 @@ function Search(props) {
                     <div className={classes.searchResults}>
                         <Grid 
                             container 
-                            spacing={2}  // Réduit l'espacement entre les sections
+                            spacing={2}
                             className={classes.sectionsContainer}
                             justifyContent="center"
+                            style={{
+                                margin: 0,
+                                width: '100%'
+                            }}
                         >
                             {sections.map((section, index) => (
                                 section.content && (
@@ -516,12 +542,16 @@ function Search(props) {
         suggestions: globalSearch.suggestions,
         onSuggestionsFetchRequested: handleSuggestionsFetchRequested,
         onSuggestionsClearRequested: handleSuggestionsClearRequested,
-        onSuggestionSelected: handleSuggestionSelected,
+        onSuggestionSelected: (event, { suggestion }) => {
+            event.preventDefault();
+            handleSuggestionSelected(event, { suggestion });
+        },
         renderSectionTitle: (section) => renderSectionTitle(section, classes),
-        getSectionSuggestions: getSectionSuggestions,
+        getSectionSuggestions,
         getSuggestionValue,
         renderSuggestion: (suggestion, params) => renderSuggestion(suggestion, params, classes),
         renderSuggestionsContainer: renderSuggestionsContainer,
+        shouldRenderSuggestions: (value) => value.trim().length > 1
     };
 
     useEffect(() => {
@@ -534,6 +564,20 @@ function Search(props) {
             console.error('onResultsVisibilityChange is not a function');
         }
     }, [globalSearch.suggestions, globalSearch.noSuggestions]);
+    
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                return false;
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
     
     switch (props.variant) {
         case 'basic':
@@ -549,6 +593,11 @@ function Search(props) {
                                 value: globalSearch.searchText || '',
                                 onChange: handleChange,
                                 onFocus: showSearch,
+                                onKeyDown: (event) => {
+                                    if (event.key === 'Enter') {
+                                        event.preventDefault();
+                                    }
+                                },
                                 InputLabelProps: {
                                     shrink: true
                                 },
@@ -586,6 +635,11 @@ function Search(props) {
                                                 placeholder: 'Rechercher un produit, une activité, un fournisseur',
                                                 value: globalSearch.searchText || '',
                                                 onChange: handleChange,
+                                                onKeyDown: (event) => {
+                                                    if (event.key === 'Enter') {
+                                                        event.preventDefault();
+                                                    }
+                                                },
                                                 InputLabelProps: {
                                                     shrink: true
                                                 },
